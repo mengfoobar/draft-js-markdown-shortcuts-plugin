@@ -14,7 +14,7 @@ const handleNewCodeBlock = (editorState) => {
     if (language) {
       data.language = language;
     }
-    return changeCurrentBlockType(editorState, 'code-block', '', data);
+    return changeCurrentBlockType(editorState, `custom-code-block${language?'-'+language:''}`, '', data);
   }
   const type = currentBlock.getType();
   if (type === 'code-block' && isLast) {

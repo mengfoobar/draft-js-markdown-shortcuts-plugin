@@ -32,7 +32,7 @@ function checkCharacterForState(editorState, character) {
   if (editorState === newEditorState) {
     newEditorState = handleLink(editorState, character);
   }
-  if (editorState === newEditorState && type !== 'code-block') {
+  if (editorState === newEditorState && !type.includes('custom-code-block')) {
     newEditorState = handleInlineStyle(editorState, character);
   }
   return newEditorState;
@@ -55,10 +55,10 @@ function checkReturnForState(editorState, ev, { insertEmptyBlockOnReturnWithModi
           || (/^header-/.test(type) && selection.isCollapsed() && selection.getEndOffset() === text.length))) {
     newEditorState = insertEmptyBlock(editorState);
   }
-  if (newEditorState === editorState && type !== 'code-block' && /^```([\w-]+)?$/.test(text)) {
+  if (newEditorState === editorState && !type.includes('custom-code-block') && /^```([\w-]+)?$/.test(text)) {
     newEditorState = handleNewCodeBlock(editorState);
   }
-  if (newEditorState === editorState && type === 'code-block') {
+  if (newEditorState === editorState && type.includes('custom-code-block')) {
     if (/```\s*$/.test(text)) {
       newEditorState = changeCurrentBlockType(newEditorState, type, text.replace(/\n```\s*$/, ''));
       newEditorState = insertEmptyBlock(newEditorState);
@@ -79,7 +79,7 @@ const createMarkdownShortcutsPlugin = (config = { insertEmptyBlockOnReturnWithMo
     blockRenderMap: Map({
       'code-block': {
         element: 'code',
-        wrapper: <pre spellCheck={'false'} />
+        wrapper: (<pre spellCheck={'false'} />)
       }
     }).merge(checkboxBlockRenderMap),
     decorators: [

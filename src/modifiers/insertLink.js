@@ -16,10 +16,22 @@ const insertLink = (editorState, matchArr) => {
     anchorOffset: index,
     focusOffset
   });
+
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let cleanedUrl;
+
+  if (re.test(href)) {
+    cleanedUrl = `mailto:${href}`;
+  } else if (url.indexOf('http') === -1) {
+    cleanedUrl = `http://${href}`;
+  } else{
+    cleanedUrl = href
+  }
+
   const nextContent = currentContent.createEntity(
     'LINK',
     'MUTABLE',
-    { href, title }
+    cleanedUrl
   );
   const entityKey = nextContent.getLastCreatedEntityKey();
   let newContentState = Modifier.replaceText(
@@ -37,7 +49,7 @@ const insertLink = (editorState, matchArr) => {
   const newWordSelection = wordSelection.merge({
     focusOffset: index + text.length
   });
-  let newEditorState = EditorState.push(editorState, newContentState, 'insert-link');
+  let newEditorState = EditorState.push(editorState, newContentState, 'create-entity');
   newEditorState = RichUtils.toggleLink(newEditorState, newWordSelection, entityKey);
   return EditorState.forceSelection(newEditorState, newContentState.getSelectionAfter());
 };
