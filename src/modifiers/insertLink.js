@@ -22,7 +22,7 @@ const insertLink = (editorState, matchArr) => {
 
   if (re.test(href)) {
     cleanedUrl = `mailto:${href}`;
-  } else if (url.indexOf('http') === -1) {
+  } else if (href.indexOf('http') === -1) {
     cleanedUrl = `http://${href}`;
   } else{
     cleanedUrl = href
