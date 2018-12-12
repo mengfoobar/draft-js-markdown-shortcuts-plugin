@@ -26,6 +26,12 @@ function checkCharacterForState(editorState, character) {
   const key = selection.getStartKey();
   const currentBlock = contentState.getBlockForKey(key);
   const type = currentBlock.getType();
+
+  const regex = /^custom-code-block-.*$/;
+
+  if (regex.exec(type)) {
+    return editorState
+  }
   if (editorState === newEditorState) {
     newEditorState = handleImage(editorState, character);
   }
